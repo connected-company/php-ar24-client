@@ -1,0 +1,20 @@
+{
+    "name": "connected-company/php-ar24-client",
+    "description": "Unofficial AR24 Client",
+    "type": "library",
+    "autoload": {
+        "psr-0": {
+            "Connected\\Ar24\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.1",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "authors": [
+        {
+            "name": "Léo Boiron",
+            "email": "lboiron@connected-company.fr"
+        }
+    ]
+}
