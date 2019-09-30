@@ -1,4 +1,5 @@
 # php-ar24-client
+- MAINTAINER : Léo Boiron
 
 Librairie PHP pour le service LRE d'AR24
 
