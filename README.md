@@ -1,5 +1,4 @@
 # php-ar24-client
-## **-> Work in progress**
 
 Librairie PHP pour le service LRE d'AR24
 
