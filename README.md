@@ -27,14 +27,14 @@ ______________
 https://www.ar24.fr/documentation/api/#api-UserGroup-create_user-1.0.0
 
 ### 2 - Ajouter les accès API à l'utilisateur si besoin
-> *L’utilisateur AR24 recevra un mail de notre part pour accepter la demande de rattachement à votre API*
+> *L’utilisateur AR24 recevra un mail de notre part pour accepter la demande de rattachement à votre API.*
 
 https://www.ar24.fr/documentation/api/#api-UserGroup-access_request-1.0.0
 
 ______________
 # Configuration et création du client
 ### 1 - Authentification et création de l'expéditeur
-L'authentification et l'expédition de LRE nécessite la création d'un objet `Sender`
+L'authentification et l'expédition d'une LRE nécessite la création d'un objet `Sender`
 ```
 use Connected\Ar24\Model\Sender;
 
@@ -67,7 +67,7 @@ $client = new Client($configuration);
 
 ______________
 # Création d'un destinataire
-La classe `Recipient` permet de créer le destinataire d'une LRE. Les informations de nom, prénom, email, raison sociale et de référence client peuvent être ajouté.
+La classe `Recipient` permet de créer le destinataire d'une LRE. Les informations de nom, prénom, email, raison sociale et de référence client peuvent être ajoutés.
 ```
 use Connected\Ar24\Model\Recipient;
 
@@ -82,7 +82,7 @@ public function __construct(
 
 ______________
 # Création d'une LRE (Simple Registered Electronic Mail)
-Pour paramétrer une LRE, le destinataire doit être fourni avec le contenu de celle-ci. Une référence de dossier et de facture peuvent êtres ajoutés.
+Pour paramétrer une LRE, le destinataire doit être fourni avec le contenu de celle-ci. Une référence de dossier et de facture peuvent être ajoutées.
 ```
 use Connected\Ar24\Model\SimpleRegisteredEmail;
 
@@ -116,8 +116,8 @@ Client::sendSimpleRegisteredEmail(SimpleRegisteredEmail $simpleRegisteredEmail);
 ```
 
 ______________
-# Informations sur une LRE envoyé
-Des informations peuvent être récupérée une fois la LRE envoyée.
+# Informations sur une LRE envoyée
+Des informations peuvent être récupérées une fois la LRE envoyée.
 ```
 Client::getSimpleRegisteredEmailInformations(int $id);
 ```
@@ -141,12 +141,12 @@ $simpleRegisteredEmail->addAttachment($attachment);
 // Envoi de la LRE.
 $response = $client->sendSimpleRegisteredEmail($simpleRegisteredEmail);
 
-// Récupérations d'information sur la LRE.
+// Récupération d'informations sur la LRE.
 $client->getSimpleRegisteredEmailInformations($response->getId());
 ```
 
 ______________
 # Exceptions
-La librairie fournit deux type d'exception :
-- `Ar24ClientException` : soulevé lorsque un paramètre est mal renseigné au sein de la librairie (Timeout inférieur à 0, mauvais email, ...).
+La librairie fournit deux types d'exceptions :
+- `Ar24ClientException` : soulevé lorsque un paramètre est mal renseigné au sein de la librairie (timeout inférieur à 0, mauvais email, ...).
 - `Ar24ApiException` : soulevé lorsque l'API d'AR24 remonte une erreur ou est en maintenance.
