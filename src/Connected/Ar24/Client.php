@@ -10,7 +10,6 @@ use Connected\Ar24\Model\SimpleRegisteredEmail;
 use Connected\Ar24\Response\AttachmentUploadedResponse;
 use Connected\Ar24\Response\MessageResponse;
 use Connected\Ar24\Response\SimpleRegisteredEmailResponse;
-use GuzzleHttp\Client as GuzzleClient;
 
 /**
  * Client for AR24.
@@ -18,7 +17,7 @@ use GuzzleHttp\Client as GuzzleClient;
 class Client
 {
     /**
-     * @var GuzzleClient
+     * @var HttpClient
      */
     private $httpClient;
 

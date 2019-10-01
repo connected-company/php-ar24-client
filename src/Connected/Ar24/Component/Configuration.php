@@ -2,6 +2,7 @@
 
 namespace Connected\Ar24\Component;
 
+use Connected\Ar24\Exception\Ar24ClientException;
 use Connected\Ar24\Model\Sender;
 
 /**

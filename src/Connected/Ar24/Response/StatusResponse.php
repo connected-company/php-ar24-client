@@ -15,7 +15,7 @@ class StatusResponse
     /**
      * Constructor.
      *
-     * @param array $data Data.
+     * @param string $status Status.
      */
     public function __construct(string $status)
     {

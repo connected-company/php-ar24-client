@@ -23,6 +23,8 @@ class Attachment
      * Constructor.
      *
      * @param string $filepath File path.
+     *
+     * @throws Ar24ClientException File does not exists.
      */
     public function __construct(string $filepath)
     {

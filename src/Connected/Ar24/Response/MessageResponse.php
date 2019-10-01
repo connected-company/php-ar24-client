@@ -20,7 +20,7 @@ class MessageResponse extends StatusResponse
      */
     public function __construct(string $status, array $data)
     {
-        parent::__construct($data);
+        parent::__construct($status);
 
         $this->message = $data['message'] ?? null;
     }

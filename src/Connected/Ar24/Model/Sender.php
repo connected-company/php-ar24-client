@@ -2,7 +2,7 @@
 
 namespace Connected\Ar24\Model;
 
-use Connected\Ar24\Ar24ClientException;
+use Connected\Ar24\Exception\Ar24ClientException;
 
 /**
  * Sender model.

@@ -3,10 +3,10 @@
 namespace Connected\Ar24\Component;
 
 use Connected\Ar24\Exception\Ar24ApiException;
+use Connected\Ar24\Exception\Ar24ClientException;
 use Connected\Ar24\Model\Attachment;
 use Connected\Ar24\Model\Sender;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\RequestOptions as GuzzleRequestOptions;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 /**
@@ -37,8 +37,8 @@ class HttpClient
     /**
      * Constructor.
      *
-     * @param string $baseUri Base URI.
      * @param Sender $sender  Sender.
+     * @param string $baseUri Base URI.
      * @param string $webhook Webhook.
      * @param float  $timeout Timeout.
      */
@@ -76,8 +76,9 @@ class HttpClient
      * Post on access point.
      * Parameters are sent with multipart.
      *
-     * @param string $accessPoint Access point.
-     * @param array  $parameters  Parameters sent in multipart.
+     * @param string          $accessPoint Access point.
+     * @param array           $parameters  Parameters sent in multipart.
+     * @param Attachment|null $attachment  Attachment to send.
      *
      * @return array
      */
@@ -125,6 +126,8 @@ class HttpClient
 
     /**
      * Get the user identifier, required for some access points.
+     *
+     * @throws Ar24ClientException Unable to retrieve the user identifier.
      *
      * @return string
      */

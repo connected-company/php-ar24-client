@@ -35,7 +35,10 @@ class SimpleRegisteredEmail
     /**
      * Constructor.
      *
-     * @param Recipient $recipient Recipient.
+     * @param Recipient   $recipient            Recipient.
+     * @param string      $content              Recipient.
+     * @param string|null $referenceDossier     Référence dossier.
+     * @param string|null $referenceFacturation Référence facturation.
      */
     public function __construct(
         Recipient $recipient,

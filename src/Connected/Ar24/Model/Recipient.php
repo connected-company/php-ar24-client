@@ -98,7 +98,7 @@ class Recipient
     }
 
     /**
-     * @return boolean
+     * @return string
      */
     public function getStatus(): string
     {
