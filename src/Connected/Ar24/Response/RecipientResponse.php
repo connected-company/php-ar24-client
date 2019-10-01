@@ -20,8 +20,8 @@ class RecipientResponse extends Recipient
             $data['to_firstname'],
             $data['to_lastname'],
             $data['to_email'],
-            $data['to_company'],
-            $data['ref_client']
+            $data['to_company'] ?? null,
+            $data['ref_client'] ?? null
         );
     }
 }
