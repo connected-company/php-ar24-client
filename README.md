@@ -13,7 +13,7 @@ Librairie PHP pour le service LRE d'AR24
 
 **Avertissements** :
 - La librairie ne prend pas en charge plusieurs comptes sur une même instance de `Client`.
-- L'ajout des pièces-jointes n'est pas optimisé si le fichier envoyé est identique à tous les clients.
+- L'ajout des pièces-jointes n'est pas optimisé si le fichier envoyé est identique à tous les destinataires.
 - Le compte authentifié est l'expéditeur.
 - Toutes les données de retour ne sont pas implémentées.
 - Avant d'utiliser cette librairie, un utilisateur doit être **manuellement** configuré avec l'API.
