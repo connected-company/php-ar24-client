@@ -9,7 +9,8 @@
     },
     "require": {
         "php": ">=7.1",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "spomky-labs/otphp": "v10.0.*"
     },
     "authors": [
         {

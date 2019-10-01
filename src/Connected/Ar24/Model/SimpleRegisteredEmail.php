@@ -10,27 +10,27 @@ class SimpleRegisteredEmail
     /**
      * @var Recipient
      */
-    private $recipient;
+    protected $recipient;
 
     /**
      * @var string
      */
-    private $content;
+    protected $content;
 
     /**
      * @var string|null
      */
-    private $referenceDossier;
+    protected $referenceDossier;
 
     /**
      * @var string|null
      */
-    private $referenceFacturation;
+    protected $referenceFacturation;
 
     /**
      * @var array
      */
-    private $attachments;
+    protected $attachments;
 
     /**
      * Constructor.

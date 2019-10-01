@@ -20,15 +20,22 @@ class Sender
     private $token;
 
     /**
+     * @var string|null
+     */
+    private $otpCode;
+
+    /**
      * Constructor.
      *
-     * @param string $email Sender's email.
-     * @param string $token Sender's token.
+     * @param string      $email   Sender's email.
+     * @param string      $token   Sender's token.
+     * @param string|null $otpCode OTP Code.
      */
-    public function __construct(string $email, string $token)
+    public function __construct(string $email, string $token, string $otpCode = null)
     {
         $this->setEmail($email);
         $this->setToken($token);
+        $this->setOtpCode($otpCode);
     }
 
     /**
@@ -45,6 +52,14 @@ class Sender
     public function getToken(): string
     {
         return $this->token;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOtpCode(): ?string
+    {
+        return $this->otpCode;
     }
 
     /**
@@ -83,6 +98,24 @@ class Sender
         }
 
         $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Set and validate the OTP code.
+     *
+     * @param string|null $otpCode OTP Code.
+     *
+     * @return self
+     */
+    private function setOtpCode(?string $otpCode): self
+    {
+        if (!is_null($otpCode) && empty($otpCode)) {
+            throw new Ar24ClientException('OTP code is invalid. The OTP code can\'t be empty.', 500);
+        }
+
+        $this->otpCode = $otpCode;
 
         return $this;
     }

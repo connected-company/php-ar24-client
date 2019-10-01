@@ -6,10 +6,13 @@ use Connected\Ar24\Component\AccessPoints;
 use Connected\Ar24\Component\Configuration;
 use Connected\Ar24\Component\HttpClient;
 use Connected\Ar24\Model\Attachment;
+use Connected\Ar24\Model\EidasEmail;
 use Connected\Ar24\Model\SimpleRegisteredEmail;
 use Connected\Ar24\Response\AttachmentUploadedResponse;
+use Connected\Ar24\Response\EidasEmailResponse;
 use Connected\Ar24\Response\MessageResponse;
 use Connected\Ar24\Response\SimpleRegisteredEmailResponse;
+use OTPHP\TOTP;
 
 /**
  * Client for AR24.
@@ -20,6 +23,11 @@ class Client
      * @var HttpClient
      */
     private $httpClient;
+
+    /**
+     * @var Configuration
+     */
+    private $configuration;
 
     /**
      * Constructor.
@@ -34,6 +42,22 @@ class Client
             $configuration->getWebhook(),
             $configuration->getTimeout()
         );
+
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * Get informations about a simple registered email.
+     *
+     * @param string $id Identifier.
+     *
+     * @return SimpleRegisteredEmailResponse
+     */
+    public function getSimpleRegisteredEmailInformations(string $id): SimpleRegisteredEmailResponse
+    {
+        $response = $this->httpClient->get(AccessPoints::GET_EMAIL_INFORMATIONS, ['id' => $id]);
+
+        return new SimpleRegisteredEmailResponse($response['status'], $response['result']);
     }
 
     /**
@@ -43,28 +67,25 @@ class Client
      *
      * @return SimpleRegisteredEmailResponse
      */
-    public function sendSimpleRegisteredEmail(
-        SimpleRegisteredEmail $simpleRegisteredEmail
-    ): SimpleRegisteredEmailResponse {
-        $data = [
-            'to_lastname' => $simpleRegisteredEmail->getRecipient()->getLastname(),
-            'to_firstname' => $simpleRegisteredEmail->getRecipient()->getFirstname(),
-            'to_company' => $simpleRegisteredEmail->getRecipient()->getCompany(),
-            'to_email' => $simpleRegisteredEmail->getRecipient()->getEmail(),
-            'dest_statut' => $simpleRegisteredEmail->getRecipient()->getStatus(),
-            'ref_client' => $simpleRegisteredEmail->getRecipient()->getReference(),
-            'content' => $simpleRegisteredEmail->getContent(),
-            'ref_dossier' => $simpleRegisteredEmail->getReferenceDossier(),
-            'ref_facturation' => $simpleRegisteredEmail->getReferenceFacturation()
-        ];
-
-        foreach ($simpleRegisteredEmail->getAttachments() as $key => $attachment) {
-            $data['attachment[' . $key . ']'] = $this->uploadAttachment($attachment)->getId();
-        }
-
-        $response = $this->httpClient->post(AccessPoints::SEND_SIMPLE_REGISTERED_EMAIL, $data);
+    public function sendSimpleRegisteredEmail(SimpleRegisteredEmail $simpleRegisteredEmail): SimpleRegisteredEmailResponse
+    {
+        $response = $this->httpClient->post(AccessPoints::SEND_EMAIL, $this->getEmailData($simpleRegisteredEmail));
 
         return new SimpleRegisteredEmailResponse($response['status'], $response['result']);
+    }
+
+    /**
+     * Send an eIDAS email.
+     *
+     * @param EidasEmail $eidasEmail EidasEmail model.
+     *
+     * @return EidasEmailResponse
+     */
+    public function sendEidasEmail(EidasEmail $eidasEmail): EidasEmailResponse
+    {
+        $response = $this->httpClient->post(AccessPoints::SEND_EMAIL, $this->getEmailData($eidasEmail, true));
+
+        return new EidasEmailResponse($response['status'], $response['result']);
     }
 
     /**
@@ -82,16 +103,42 @@ class Client
     }
 
     /**
-     * Get informations about a simple registered email.
+     * Prepare data for an email.
      *
-     * @param string $id Identifier.
+     * @param SimpleRegisteredEmail $simpleRegisteredEmail SimpleRegisteredEmail model.
+     * @param boolean               $eidas                 Send as an eIDAS email.
      *
-     * @return SimpleRegisteredEmailResponse
+     * @return array
      */
-    public function getSimpleRegisteredEmailInformations(string $id): SimpleRegisteredEmailResponse
+    private function getEmailData(SimpleRegisteredEmail $simpleRegisteredEmail, bool $eidas = false): array
     {
-        $response = $this->httpClient->get(AccessPoints::GET_SIMPLE_REGISTERED_EMAIL_INFORMATIONS, ['id' => $id]);
+        $data = [
+            'to_lastname' => $simpleRegisteredEmail->getRecipient()->getLastname(),
+            'to_firstname' => $simpleRegisteredEmail->getRecipient()->getFirstname(),
+            'to_company' => $simpleRegisteredEmail->getRecipient()->getCompany(),
+            'to_email' => $simpleRegisteredEmail->getRecipient()->getEmail(),
+            'dest_statut' => $simpleRegisteredEmail->getRecipient()->getStatus(),
+            'ref_client' => $simpleRegisteredEmail->getRecipient()->getReference(),
+            'content' => $simpleRegisteredEmail->getContent(),
+            'ref_dossier' => $simpleRegisteredEmail->getReferenceDossier(),
+            'ref_facturation' => $simpleRegisteredEmail->getReferenceFacturation()
+        ];
 
-        return new SimpleRegisteredEmailResponse($response['status'], $response['result']);
+        foreach ($simpleRegisteredEmail->getAttachments() as $key => $attachment) {
+            $data['attachment[' . $key . ']'] = $this->uploadAttachment($attachment)->getId();
+        }
+
+        if ($eidas) {
+            if ($this->configuration->getSender()->getOtpCode()) {
+                if (empty($this->configuration->getSender()->getOtpCode())) {
+                    throw new Ar24ClientException('OTP code is empty', 500);
+                }
+            }
+
+            $data['eidas'] = true;
+            $data['otp'] = TOTP::create($this->configuration->getSender()->getOtpCode())->now();
+        }
+
+        return $data;
     }
 }
