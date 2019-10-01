@@ -11,7 +11,7 @@ Librairie PHP pour le service LRE d'AR24
 - Ajout de pièces-jointes.
 - Envoi d'une LRE simple (Simple Registered Electronic Mail) à un destinataire.
 
-**Avertissement** :
+**Avertissements** :
 - La librairie ne prend pas en charge plusieurs comptes sur une même instance de `Client`.
 - L'ajout des pièces-jointes n'est pas optimisé si le fichier envoyé est identique à tous les clients.
 - Le compte authentifié est l'expéditeur.
