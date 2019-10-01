@@ -3,9 +3,9 @@
 namespace Connected\Ar24\Model;
 
 /**
- * Simple registered email model.
+ * Email model.
  */
-class SimpleRegisteredEmail
+class Email
 {
     /**
      * @var Recipient

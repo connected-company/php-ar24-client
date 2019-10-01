@@ -6,12 +6,10 @@ use Connected\Ar24\Component\AccessPoints;
 use Connected\Ar24\Component\Configuration;
 use Connected\Ar24\Component\HttpClient;
 use Connected\Ar24\Model\Attachment;
-use Connected\Ar24\Model\EidasEmail;
-use Connected\Ar24\Model\SimpleRegisteredEmail;
+use Connected\Ar24\Model\Email;
 use Connected\Ar24\Response\AttachmentUploadedResponse;
-use Connected\Ar24\Response\EidasEmailResponse;
+use Connected\Ar24\Response\EmailResponse;
 use Connected\Ar24\Response\MessageResponse;
-use Connected\Ar24\Response\SimpleRegisteredEmailResponse;
 use OTPHP\TOTP;
 
 /**
@@ -51,41 +49,41 @@ class Client
      *
      * @param string $id Identifier.
      *
-     * @return SimpleRegisteredEmailResponse
+     * @return EmailResponse
      */
-    public function getSimpleRegisteredEmailInformations(string $id): SimpleRegisteredEmailResponse
+    public function getEmailInformations(string $id): EmailResponse
     {
         $response = $this->httpClient->get(AccessPoints::GET_EMAIL_INFORMATIONS, ['id' => $id]);
 
-        return new SimpleRegisteredEmailResponse($response['status'], $response['result']);
+        return new EmailResponse($response['status'], $response['result']);
     }
 
     /**
      * Send a simple registered email.
      *
-     * @param SimpleRegisteredEmail $simpleRegisteredEmail SimpleRegisteredEmail model.
+     * @param Email $email Email model.
      *
-     * @return SimpleRegisteredEmailResponse
+     * @return EmailResponse
      */
-    public function sendSimpleRegisteredEmail(SimpleRegisteredEmail $simpleRegisteredEmail): SimpleRegisteredEmailResponse
+    public function sendSimpleRegisteredEmail(Email $email): EmailResponse
     {
-        $response = $this->httpClient->post(AccessPoints::SEND_EMAIL, $this->getEmailData($simpleRegisteredEmail));
+        $response = $this->httpClient->post(AccessPoints::SEND_EMAIL, $this->getEmailData($email));
 
-        return new SimpleRegisteredEmailResponse($response['status'], $response['result']);
+        return new EmailResponse($response['status'], $response['result']);
     }
 
     /**
      * Send an eIDAS email.
      *
-     * @param EidasEmail $eidasEmail EidasEmail model.
+     * @param Email $email Email model.
      *
-     * @return EidasEmailResponse
+     * @return EmailResponse
      */
-    public function sendEidasEmail(EidasEmail $eidasEmail): EidasEmailResponse
+    public function sendEidasEmail(Email $email): EmailResponse
     {
-        $response = $this->httpClient->post(AccessPoints::SEND_EMAIL, $this->getEmailData($eidasEmail, true));
+        $response = $this->httpClient->post(AccessPoints::SEND_EMAIL, $this->getEmailData($email, true));
 
-        return new EidasEmailResponse($response['status'], $response['result']);
+        return new EmailResponse($response['status'], $response['result']);
     }
 
     /**
@@ -105,26 +103,26 @@ class Client
     /**
      * Prepare data for an email.
      *
-     * @param SimpleRegisteredEmail $simpleRegisteredEmail SimpleRegisteredEmail model.
-     * @param boolean               $eidas                 Send as an eIDAS email.
+     * @param Email   $email Email model.
+     * @param boolean $eidas Send as an eIDAS email.
      *
      * @return array
      */
-    private function getEmailData(SimpleRegisteredEmail $simpleRegisteredEmail, bool $eidas = false): array
+    private function getEmailData(Email $email, bool $eidas = false): array
     {
         $data = [
-            'to_lastname' => $simpleRegisteredEmail->getRecipient()->getLastname(),
-            'to_firstname' => $simpleRegisteredEmail->getRecipient()->getFirstname(),
-            'to_company' => $simpleRegisteredEmail->getRecipient()->getCompany(),
-            'to_email' => $simpleRegisteredEmail->getRecipient()->getEmail(),
-            'dest_statut' => $simpleRegisteredEmail->getRecipient()->getStatus(),
-            'ref_client' => $simpleRegisteredEmail->getRecipient()->getReference(),
-            'content' => $simpleRegisteredEmail->getContent(),
-            'ref_dossier' => $simpleRegisteredEmail->getReferenceDossier(),
-            'ref_facturation' => $simpleRegisteredEmail->getReferenceFacturation()
+            'to_lastname' => $email->getRecipient()->getLastname(),
+            'to_firstname' => $email->getRecipient()->getFirstname(),
+            'to_company' => $email->getRecipient()->getCompany(),
+            'to_email' => $email->getRecipient()->getEmail(),
+            'dest_statut' => $email->getRecipient()->getStatus(),
+            'ref_client' => $email->getRecipient()->getReference(),
+            'content' => $email->getContent(),
+            'ref_dossier' => $email->getReferenceDossier(),
+            'ref_facturation' => $email->getReferenceFacturation()
         ];
 
-        foreach ($simpleRegisteredEmail->getAttachments() as $key => $attachment) {
+        foreach ($email->getAttachments() as $key => $attachment) {
             $data['attachment[' . $key . ']'] = $this->uploadAttachment($attachment)->getId();
         }
 

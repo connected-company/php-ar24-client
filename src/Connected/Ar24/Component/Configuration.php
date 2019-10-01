@@ -13,7 +13,7 @@ class Configuration
     /**
      * Default timeout for http client (seconds).
      */
-    const TIMEOUT = 5.0;
+    const TIMEOUT = 20.0;
 
     /**
      * Demo environment.

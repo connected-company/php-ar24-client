@@ -12,6 +12,7 @@ class AccessPoints
 
     // Send an email to a recipient.
     const SEND_EMAIL = 'mail/';
+
     // Get informations about an email.
     const GET_EMAIL_INFORMATIONS = 'mail/';
 

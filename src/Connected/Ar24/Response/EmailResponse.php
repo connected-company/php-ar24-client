@@ -3,9 +3,9 @@
 namespace Connected\Ar24\Response;
 
 /**
- * Response for simple registered email.
+ * Response for email.
  */
-class SimpleRegisteredEmailResponse extends StatusResponse
+class EmailResponse extends StatusResponse
 {
     /**
      * @var integer|null
