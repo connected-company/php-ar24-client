@@ -45,7 +45,12 @@ La création du client nécessite un objet `Configuration` qui permet de spécif
 ```php
 use Connected\Ar24\Component\Configuration;
 
-public function __construct(Sender $sender, string $environment, string $webhook, float $timeout = self::TIMEOUT);
+public function __construct(
+  Sender $sender, 
+  string $environment, 
+  string $webhook,
+  float $timeout = self::TIMEOUT
+);
 ```
 L'argument `$environment` doit être `demo` ou `prod`.
 Le timeout par défaut est de 20 secondes pour permettre l'envoi de pièces-jointes imposantes.
