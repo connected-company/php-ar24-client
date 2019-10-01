@@ -160,7 +160,7 @@ $client = new Client($configuration);
 
 // Création du destinataire et de la LRE.
 $recipient = new Recipient('Léo', 'Boiron', 'lboiron@domain.tld');
-$email = new SimpleRegisteredEmail($recipient, 'Contenu LRE');
+$email = new Email($recipient, 'Contenu LRE');
 
 // Ajout d'une pièce-jointe.
 $attachment = new Attachment('/var/www/html/documents/file.pdf');
