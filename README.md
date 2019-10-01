@@ -18,6 +18,17 @@ Librairie PHP pour le service LRE d'AR24 (https://www.ar24.fr/)
 - Toutes les données de retour ne sont pas implémentées.
 - Avant d'utiliser cette librairie, un utilisateur doit être **manuellement** configuré avec l'API.
 
+** Sommaire **
+- [Création manuel de l'utilisateur](#cr%C3%A9ation-manuel-de-lutilisateur)
+- [Configuration et création du client](#configuration-et-création-du-client)
+- [Création d'un destinataire](#création-dun-destinataire)
+- [Création d'une LRE (Simple Registered Electronic Mail)](#création-dune-lre-simple-registered-electronic-mail)
+- [Ajouter une pièce-jointe](#ajouter-une-pièce-jointe)
+- [Envoyer la LRE](#envoyer-la-lre)
+- [Informations sur une LRE envoyée](#informations-sur-une-lre-envoyée)
+- [Exemple](#exemple)
+- [Exceptions](#exceptions)
+
 ______________
 # Création manuel de l'utilisateur
 
