@@ -9,7 +9,7 @@ Librairie PHP pour le service LRE d'AR24 (https://www.ar24.fr/)
 - Configuration du webhook et du timeout.
 - Création d'un expéditeur avec le compte utilisé par l'authentification.
 - Ajout de pièces-jointes.
-- Envoi d'une LRE simple (Simple Registered Electronic Mail) à un destinataire.
+- Envoi d'une LRE simple (Simple Registered Electronic Mail) ou d'une LRE eIDAS à un destinataire.
 
 **Avertissements** :
 - La librairie ne prend pas en charge plusieurs comptes sur une même instance de `Client`.
@@ -17,14 +17,16 @@ Librairie PHP pour le service LRE d'AR24 (https://www.ar24.fr/)
 - Le compte authentifié est l'expéditeur.
 - Toutes les données de retour ne sont pas implémentées.
 - Avant d'utiliser cette librairie, un utilisateur doit être **manuellement** configuré avec l'API.
+- Dans le cas de l'utilisation des LRE eIDAS, un code OTP doit être **manuellement** récupéré.
+- Seulement l'authentification par OTP est actuellement gérée pour les LRE eIDAS. 
 
 **Sommaire** :
 - [Création manuel de l'utilisateur](#cr%C3%A9ation-manuel-de-lutilisateur)
 - [Configuration et création du client](#configuration-et-création-du-client)
 - [Création d'un destinataire](#création-dun-destinataire)
-- [Création d'une LRE (Simple Registered Electronic Mail)](#création-dune-lre-simple-registered-electronic-mail)
+- [Création d'une LRE](#création-dune-lre)
 - [Ajouter une pièce-jointe](#ajouter-une-pièce-jointe)
-- [Envoyer la LRE](#envoyer-la-lre)
+- [Envoyer une LRE](#envoyer-une-lre)
 - [Informations sur une LRE envoyée](#informations-sur-une-lre-envoyée)
 - [Exemple](#exemple)
 - [Exceptions](#exceptions)
@@ -42,14 +44,20 @@ https://www.ar24.fr/documentation/api/#api-UserGroup-create_user-1.0.0
 
 https://www.ar24.fr/documentation/api/#api-UserGroup-access_request-1.0.0
 
+### 3 - Récupération du code OTP pour les LRE eIDAS
+> *Afin d’effectuer un envoi de LRE eIDAS il est nécessaire d’identifier l’expéditeur du courrier.
+Cette identification passe par des OTP pour l’expéditeur lorsqu’il souhaite faire un envoi via l’API.*
+
+https://www.ar24.fr/documentation/api/#api-eidas-send_eidas_mail
+
 ______________
 # Configuration et création du client
 ### 1 - Authentification et création de l'expéditeur
-L'authentification et l'expédition d'une LRE nécessite la création d'un objet `Sender`
+L'authentification et l'expédition d'une LRE nécessite la création d'un objet `Sender`. Le code OTP peut être fourni.
 ```php
 use Connected\Ar24\Model\Sender;
 
-public function __construct(string $email, string $token);
+public function __construct(string $email, string $token, string $otpCode = null);
 ```
 ### 2 - Configuration de la librairie
 La création du client nécessite un objet `Configuration` qui permet de spécifier l'environnement, le webhook et le timeout.
@@ -76,7 +84,7 @@ public function __construct(Configuration $configuration);
 
 ### Résumé
 ```php
-$sender = new Sender('expediteur@domain.tld', '132465798132456798132465789');
+$sender = new Sender('expediteur@domain.tld', '132465798132456798132465789', 'OTPCODE123456789);
 $configuration = new Configuration($sender, 'demo', 'https://webook-url.tld/api');
 $client = new Client($configuration);
 ```
@@ -97,10 +105,10 @@ public function __construct(
 ```
 
 ______________
-# Création d'une LRE (Simple Registered Electronic Mail)
+# Création d'une LRE
 Pour paramétrer une LRE, le destinataire doit être fourni avec le contenu de celle-ci. Une référence de dossier et de facture peuvent être ajoutées.
 ```php
-use Connected\Ar24\Model\SimpleRegisteredEmail;
+use Connected\Ar24\Model\Email;
 
 public function __construct(
   Recipient $recipient, 
@@ -120,45 +128,52 @@ public function __construct(string $filepath);
 ```
 L'objet `Attachment` doit ensuite être ajouté à la LRE.
 ```php
-SimpleRegisteredEmail::addAttachment(Attachment $attachment);
+Email::addAttachment(Attachment $attachment);
 ```
 
 ______________
-# Envoyer la LRE
-
+# Envoyer une LRE
 Une fois le destinataire ajouté ainsi que les éventuelles pièces-jointes, la LRE peut être envoyée depuis le client.
+Dans le cadre d'une LRE simple :
 ```php
-Client::sendSimpleRegisteredEmail(SimpleRegisteredEmail $simpleRegisteredEmail);
+Client::sendSimpleRegisteredEmail(Email $email);
+```
+Ou pour une LRE eIDAS (le code OTP doit être fourni lors de la création du `Sender` !) :
+```php
+Client::sendEidasEmail(Email $email);
 ```
 
 ______________
 # Informations sur une LRE envoyée
 Des informations peuvent être récupérées une fois la LRE envoyée.
 ```php
-Client::getSimpleRegisteredEmailInformations(int $id);
+Client::getEmailInformations(int $id);
 ```
 
 ______________
 # Exemple
 ```php
 // Configuration et création du client.
-$sender = new Sender('leo.boiron@domain.tld', '123456789123456789123456789');
+$sender = new Sender('leo.boiron@domain.tld', '123456789123456789123456789', 'OTPCODE123456789');
 $configuration = new Configuration($sender, 'demo', 'https://webook-url.tld/api');
 $client = new Client($configuration);
 
 // Création du destinataire et de la LRE.
 $recipient = new Recipient('Léo', 'Boiron', 'lboiron@domain.tld');
-$simpleRegisteredEmail = new SimpleRegisteredEmail($recipient, 'Contenu LRE');
+$email = new SimpleRegisteredEmail($recipient, 'Contenu LRE');
 
 // Ajout d'une pièce-jointe.
 $attachment = new Attachment('/var/www/html/documents/file.pdf');
-$simpleRegisteredEmail->addAttachment($attachment);
+$email->addAttachment($attachment);
 
-// Envoi de la LRE.
-$response = $client->sendSimpleRegisteredEmail($simpleRegisteredEmail);
+// Envoi de la LRE simple.
+$response = $client->sendSimpleRegisteredEmail($email);
 
-// Récupération d'informations sur la LRE.
-$client->getSimpleRegisteredEmailInformations($response->getId());
+// Envoi de la LRE eIDAS.
+$response = $client->sendEidasEmail($email);
+
+// Récupération d'informations sur la dernière LRE envoyée.
+$client->getEmailInformations($response->getId());
 ```
 
 ______________
