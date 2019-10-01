@@ -127,10 +127,8 @@ class Client
         }
 
         if ($eidas) {
-            if ($this->configuration->getSender()->getOtpCode()) {
-                if (empty($this->configuration->getSender()->getOtpCode())) {
-                    throw new Ar24ClientException('OTP code is empty', 500);
-                }
+            if (empty($this->configuration->getSender()->getOtpCode())) {
+                throw new Ar24ClientException('OTP code is empty', 500);
             }
 
             $data['eidas'] = true;
