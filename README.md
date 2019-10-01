@@ -35,14 +35,14 @@ ______________
 # Configuration et création du client
 ### 1 - Authentification et création de l'expéditeur
 L'authentification et l'expédition d'une LRE nécessite la création d'un objet `Sender`
-```
+```php
 use Connected\Ar24\Model\Sender;
 
 public function __construct(string $email, string $token);
 ```
 ### 2 - Configuration de la librairie
 La création du client nécessite un objet `Configuration` qui permet de spécifier l'environnement, le webhook et le timeout.
-```
+```php
 use Connected\Ar24\Component\Configuration;
 
 public function __construct(Sender $sender, string $environment, string $webhook, float $timeout = self::TIMEOUT);
@@ -52,14 +52,14 @@ Le timeout par défaut est de 20 secondes pour permettre l'envoi de pièces-join
 
 ### 3 - Création du client
 Le client doit être instancié avec l'objet `Configuration`.
-```
+```php
 use Connected\Ar24\Client;
 
 public function __construct(Configuration $configuration);
 ```
 
 ### Résumé
-```
+```php
 $sender = new Sender('expediteur@domain.tld', '132465798132456798132465789');
 $configuration = new Configuration($sender, 'demo', 'https://webook-url.tld/api');
 $client = new Client($configuration);
@@ -68,7 +68,7 @@ $client = new Client($configuration);
 ______________
 # Création d'un destinataire
 La classe `Recipient` permet de créer le destinataire d'une LRE. Les informations de nom, prénom, email, raison sociale et de référence client peuvent être ajoutés.
-```
+```php
 use Connected\Ar24\Model\Recipient;
 
 public function __construct(
@@ -83,7 +83,7 @@ public function __construct(
 ______________
 # Création d'une LRE (Simple Registered Electronic Mail)
 Pour paramétrer une LRE, le destinataire doit être fourni avec le contenu de celle-ci. Une référence de dossier et de facture peuvent être ajoutées.
-```
+```php
 use Connected\Ar24\Model\SimpleRegisteredEmail;
 
 public function __construct(
@@ -97,13 +97,13 @@ public function __construct(
 ______________
 # Ajouter une pièce-jointe
 L'ajout d'une pièce-jointe nécessite de fournir le chemin du fichier à ajouter.
-```
+```php
 use Connected\Ar24\Model\Attachment;
 
 public function __construct(string $filepath);
 ```
 L'objet `Attachment` doit ensuite être ajouté à la LRE.
-```
+```php
 SimpleRegisteredEmail::addAttachment(Attachment $attachment);
 ```
 
@@ -111,20 +111,20 @@ ______________
 # Envoyer la LRE
 
 Une fois le destinataire ajouté ainsi que les éventuelles pièces-jointes, la LRE peut être envoyée depuis le client.
-```
+```php
 Client::sendSimpleRegisteredEmail(SimpleRegisteredEmail $simpleRegisteredEmail);
 ```
 
 ______________
 # Informations sur une LRE envoyée
 Des informations peuvent être récupérées une fois la LRE envoyée.
-```
+```php
 Client::getSimpleRegisteredEmailInformations(int $id);
 ```
 
 ______________
 # Exemple
-```
+```php
 // Configuration et création du client.
 $sender = new Sender('leo.boiron@domain.tld', '123456789123456789123456789');
 $configuration = new Configuration($sender, 'demo', 'https://webook-url.tld/api');
