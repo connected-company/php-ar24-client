@@ -1,7 +1,7 @@
 # php-ar24-client
 - MAINTAINER : Léo Boiron
 
-Librairie PHP pour le service LRE d'AR24
+Librairie PHP pour le service LRE d'AR24 (https://www.ar24.fr/)
 
 **Fonctionnalités** :
 - Création d'un client sur l'environnement de test ou de production.
