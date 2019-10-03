@@ -3,7 +3,7 @@
 namespace Connected\Ar24\Component;
 
 use Connected\Ar24\Exception\Ar24ClientException;
-use Connected\Ar24\Model\Sender;
+use Connected\Ar24\Model\User;
 
 /**
  * Configuration for AR24.
@@ -36,9 +36,9 @@ class Configuration
     const PROD_API_URI = 'https://app.ar24.fr/api/';
 
     /**
-     * @var Sender
+     * @var array
      */
-    private $sender;
+    private $userConfigurations;
 
     /**
      * @var string
@@ -58,14 +58,12 @@ class Configuration
     /**
      * Constructor.
      *
-     * @param Sender $sender      Sender informations.
      * @param string $environment Environment.
      * @param string $webhook     Webhook.
      * @param float  $timeout     Timeout.
      */
-    public function __construct(Sender $sender, string $environment, string $webhook, float $timeout = self::TIMEOUT)
+    public function __construct(string $environment, string $webhook, float $timeout = self::TIMEOUT)
     {
-        $this->sender = $sender;
         $this->webhook = $webhook;
         $this->setEnvironment($environment)->setTimeout($timeout);
     }
@@ -81,13 +79,29 @@ class Configuration
     }
 
     /**
-     * Returns the sender.
+     * Add a new UserConfiguration.
      *
-     * @return Sender
+     * @param UserConfiguration $userConfiguration User configuration.
+     *
+     * @return self
      */
-    public function getSender(): Sender
+    public function addUserConfiguration(UserConfiguration $userConfiguration): self
     {
-        return $this->sender;
+        $this->userConfigurations[$userConfiguration->getEmail()] = $userConfiguration;
+
+        return $this;
+    }
+
+    /**
+     * Get UserConfiguration from User.
+     *
+     * @param User $user User.
+     *
+     * @return UserConfiguration
+     */
+    public function getUserConfigurationByUser(User $user): UserConfiguration
+    {
+        return $this->userConfigurations[$user->getEmail()];
     }
 
     /**

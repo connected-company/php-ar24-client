@@ -5,30 +5,30 @@ namespace Connected\Ar24\Model;
 use Connected\Ar24\Exception\Ar24ClientException;
 
 /**
- * Sender model.
+ * User model.
  */
-class Sender
+class User
 {
     /**
      * @var string
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
      */
-    private $token;
+    protected $token;
 
     /**
      * @var string|null
      */
-    private $otpCode;
+    protected $otpCode;
 
     /**
      * Constructor.
      *
-     * @param string      $email   Sender's email.
-     * @param string      $token   Sender's token.
+     * @param string      $email   User's email.
+     * @param string      $token   User's token.
      * @param string|null $otpCode OTP Code.
      */
     public function __construct(string $email, string $token, string $otpCode = null)
@@ -106,6 +106,8 @@ class Sender
      * Set and validate the OTP code.
      *
      * @param string|null $otpCode OTP Code.
+     *
+     * @throws Ar24ClientException OTP code is empty.
      *
      * @return self
      */

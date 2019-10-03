@@ -28,11 +28,6 @@ class EmailResponse extends StatusResponse
     protected $referenceDossier;
 
     /**
-     * @var \DateTime
-     */
-    protected $date;
-
-    /**
      * @var boolean|null
      */
     protected $sendFail;
@@ -46,6 +41,26 @@ class EmailResponse extends StatusResponse
      * @var string|null
      */
     protected $proofDepotUrl;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $dateSent;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $dateOpened;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $dateRefused;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $dateExpired;
 
     /**
      * @var string|null
@@ -70,7 +85,10 @@ class EmailResponse extends StatusResponse
         $this->id = $data['id'] ?? null;
         $this->emailStatus = $data['status'] ?? null;
         $this->referenceDossier = $data['ref_dossier'] ?? null;
-        $this->date = !empty($data['date']) ? (new \DateTime())->createFromFormat('Y-m-d H:i:s', $data['date']) : null;
+        $this->dateSent = !empty($data['ts_ev_date']) ? (new \DateTime())->createFromFormat('Y-m-d H:i:s', $data['ts_ev_date']) : null;
+        $this->dateOpened = !empty($data['view_date']) ? (new \DateTime())->createFromFormat('Y-m-d H:i:s', $data['view_date']) : null;
+        $this->dateRefused = !empty($data['refused_date']) ? (new \DateTime())->createFromFormat('Y-m-d H:i:s', $data['refused_date']) : null;
+        $this->dateExpired = !empty($data['negligence_date']) ? (new \DateTime())->createFromFormat('Y-m-d H:i:s', $data['negligence_date']) : null;
         $this->sendFail = $data['send_fail'] ?? null;
         $this->recipientResponse = new RecipientResponse($data);
         $this->proofDepotUrl = $data['proof_dp_url'] ?? null;
@@ -117,11 +135,35 @@ class EmailResponse extends StatusResponse
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDate(): ?\DateTime
+    public function getDateSent(): ?\DateTime
     {
-        return $this->date;
+        return $this->dateSent;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getDateOpened(): ?\DateTime
+    {
+        return $this->dateOpened;
+    }
+
+    /**
+     * @return \DateTime|null Date.
+     */
+    public function getDateRefused(): ?\DateTime
+    {
+        return $this->dateRefused;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getDateExpired(): ?\DateTime
+    {
+        return $this->dateExpired;
     }
 
     /**
