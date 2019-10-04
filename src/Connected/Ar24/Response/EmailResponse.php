@@ -181,4 +181,28 @@ class EmailResponse extends StatusResponse
     {
         return $this->attachments;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getProofDepotUrl(): ?string
+    {
+        return $this->proofDepotUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProofEnvoiUrl(): ?string
+    {
+        return $this->proofEnvoiUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProofArUrl(): ?string
+    {
+        return $this->proofArUrl;
+    }
 }

@@ -58,6 +58,26 @@ class Recipient
     }
 
     /**
+     * Set and validate the email.
+     *
+     * @param string $email API email.
+     *
+     * @throws Ar24ClientException Invalid email.
+     *
+     * @return self
+     */
+    public function setEmail(string $email): self
+    {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Ar24ClientException('The email is invalid', 500);
+        }
+
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getFirstname(): string
@@ -103,25 +123,5 @@ class Recipient
     public function getStatus(): string
     {
         return empty($this->company) ? 'particulier' : 'professionnel';
-    }
-
-    /**
-     * Set and validate the email.
-     *
-     * @param string $email API email.
-     *
-     * @throws Ar24ClientException Invalid email.
-     *
-     * @return self
-     */
-    private function setEmail(string $email): self
-    {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Ar24ClientException('The email is invalid', 500);
-        }
-
-        $this->email = $email;
-
-        return $this;
     }
 }
