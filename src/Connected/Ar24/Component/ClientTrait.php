@@ -33,12 +33,12 @@ trait ClientTrait
         }
 
         if ($eidas) {
-            if (empty($user->getOtpCode())) {
-                throw new Ar24ClientException('OTP code is empty', 500);
+            if (empty($this->getUserConfiguration($user)->getHash())) {
+                throw new Ar24ClientException('OTP hash is empty', 500);
             }
 
             $data['eidas'] = true;
-            $data['otp'] = TOTP::create($user->getOtpCode())->now();
+            $data['auth_otp_hash'] = $this->getUserConfiguration($user)->getHash();
         }
 
         return $data;

@@ -7,11 +7,11 @@ use Connected\Ar24\Component\ClientTrait;
 use Connected\Ar24\Component\Configuration;
 use Connected\Ar24\Component\HttpClient;
 use Connected\Ar24\Component\UserConfiguration;
-use Connected\Ar24\Exception\Ar24ClientException;
 use Connected\Ar24\Model\Attachment;
 use Connected\Ar24\Model\Email;
 use Connected\Ar24\Model\User;
 use Connected\Ar24\Response\AttachmentUploadedResponse;
+use Connected\Ar24\Response\AuthenticateResponse;
 use Connected\Ar24\Response\EmailResponse;
 use Connected\Ar24\Response\MessageResponse;
 use OTPHP\TOTP;
@@ -77,6 +77,36 @@ class Client
     }
 
     /**
+     * Authenticate user with TOTP code.
+     *
+     * @param User $user User.
+     *
+     * @return AuthenticateResponse|null
+     */
+    public function refreshOtpHash(User $user): ?AuthenticateResponse
+    {
+        if (!empty($this->getUserConfiguration($user)->getHash())
+            && $this->getUserConfiguration($user)->getExpirationDate() > (new \DateTime())
+        ) {
+            return null;
+        }
+
+        $response = $this->httpClient->post(
+            $this->getUserConfiguration($user),
+            AccessPoints::AUTHENTICATE_OTP,
+            ['otp' => TOTP::create($user->getOtpCode())->now()]
+        );
+
+        $response = new AuthenticateResponse($response['status'], $response['result']);
+        $this->getUserConfiguration($user)
+            ->setHash($response->getHash())
+            ->setExpirationDate($response->getExpirationDate())
+        ;
+
+        return $response;
+    }
+
+    /**
      * Send a simple registered email.
      *
      * @param User  $user  User.
@@ -105,6 +135,8 @@ class Client
      */
     public function sendEidasEmail(User $user, Email $email): EmailResponse
     {
+        $this->refreshOtpHash($user);
+
         $response = $this->httpClient->post(
             $this->getUserConfiguration($user),
             AccessPoints::POST_EMAIL,

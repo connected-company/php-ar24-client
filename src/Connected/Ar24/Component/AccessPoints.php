@@ -18,4 +18,7 @@ class AccessPoints
 
     // Post an attachment.
     const POST_ATTACHMENT = 'attachment/';
+
+    // Authenticate with OTP.
+    const AUTHENTICATE_OTP = 'user/auth_otp/';
 }
