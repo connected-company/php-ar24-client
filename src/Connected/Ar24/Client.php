@@ -193,8 +193,6 @@ class Client
      * @param array $ids
      *
      * @return array
-     *
-     * @throws Ar24ApiException
      */
     public function getRegisteredMailList(User $user, array $ids = []): array
     {
@@ -204,12 +202,8 @@ class Client
             ['mail' => $ids]
         );
 
-        if ($response['status'] === 'SUCCESS') {
-            return array_map(function ($email) use ($response) {
-                return new EmailResponse($response['status'], $email);
-            }, $response['result']);
-        }
-
-        throw new Ar24ApiException('An error has occured.', null, 500);
+        return array_map(function ($email) use ($response) {
+            return new EmailResponse($response['status'], $email);
+        }, $response['result']);
     }
 }
