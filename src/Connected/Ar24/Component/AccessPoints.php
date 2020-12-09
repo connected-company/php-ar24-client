@@ -21,4 +21,7 @@ class AccessPoints
 
     // Authenticate with OTP.
     const AUTHENTICATE_OTP = 'user/auth_otp/';
+
+    // Get registered mail list.
+    const GET_REGISTERED_MAIL_LIST = 'user/mail';
 }

@@ -7,6 +7,7 @@ use Connected\Ar24\Component\ClientTrait;
 use Connected\Ar24\Component\Configuration;
 use Connected\Ar24\Component\HttpClient;
 use Connected\Ar24\Component\UserConfiguration;
+use Connected\Ar24\Exception\Ar24ApiException;
 use Connected\Ar24\Model\Attachment;
 use Connected\Ar24\Model\Email;
 use Connected\Ar24\Model\User;
@@ -183,5 +184,26 @@ class Client
         );
 
         return new EmailResponse($response['status'], $response['result']);
+    }
+
+    /**
+     * Get registered mail list by ids.
+     *
+     * @param User $user
+     * @param array $ids
+     *
+     * @return array
+     */
+    public function getRegisteredMailList(User $user, array $ids = []): array
+    {
+        $response = $this->httpClient->get(
+            $this->getUserConfiguration($user),
+            AccessPoints::GET_REGISTERED_MAIL_LIST,
+            ['mail' => $ids]
+        );
+
+        return array_map(function ($email) use ($response) {
+            return new EmailResponse($response['status'], $email);
+        }, $response['result']);
     }
 }
