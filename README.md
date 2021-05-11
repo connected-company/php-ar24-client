@@ -1,5 +1,5 @@
 # php-ar24-client
-*Auteur : Léo Boiron (lboiron@connected-company.fr)*
+*Auteur : Léo Boiron (lboiron@com-company.fr)*
 
 Librairie PHP pour le service LRE d'AR24 (https://www.ar24.fr/)
 
