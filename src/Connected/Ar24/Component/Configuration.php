@@ -28,7 +28,7 @@ class Configuration
     /**
      * Base URI for demo environment.
      */
-    const DEMO_API_URI = 'https://test.ar24.fr/api/';
+    const DEMO_API_URI = 'https://sandbox.ar24.fr/api/';
 
     /**
      * Base URI for production environment.
